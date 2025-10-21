@@ -1,0 +1,41 @@
+{
+  "name": "convertkit-prepopulate",
+  "version": "2.0.0",
+  "description": "Pre-populate ConvertKit landing page forms with subscriber data from URL parameters. Features input validation, XSS protection, and flexible configuration.",
+  "main": "pre-pop.js",
+  "scripts": {
+    "test": "node --check pre-pop.js",
+    "minify": "npx terser pre-pop.js -o pre-pop.min.js --compress --mangle --comments false",
+    "minify:stats": "npx terser pre-pop.js -o pre-pop.min.js --compress --mangle --comments false && echo \"Original:\" && wc -c pre-pop.js && echo \"Minified:\" && wc -c pre-pop.min.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tracking202/ck-prepopulate.git"
+  },
+  "keywords": [
+    "convertkit",
+    "form",
+    "pre-populate",
+    "landing-page",
+    "email",
+    "marketing",
+    "validation",
+    "xss-protection",
+    "security"
+  ],
+  "author": "tracking202",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tracking202/ck-prepopulate/issues"
+  },
+  "homepage": "https://github.com/tracking202/ck-prepopulate#readme",
+  "files": [
+    "pre-pop.js",
+    "pre-pop.min.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=8.0.0"
+  }
+}

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConvertKit Pre-Populate Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .test-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .test-urls {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        .test-urls h3 {
+            margin-top: 0;
+        }
+        .test-urls a {
+            display: block;
+            margin: 10px 0;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .test-urls a:hover {
+            text-decoration: underline;
+        }
+        .console-log {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .console-log div {
+            margin: 5px 0;
+        }
+        .log-info { color: #4fc3f7; }
+        .log-warn { color: #ffb74d; }
+        .log-error { color: #e57373; }
+        .log-success { color: #81c784; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ConvertKit Pre-Populate Test Page</h1>
+
+        <div class="test-info">
+            <strong>Test Instructions:</strong><br>
+            This page simulates a ConvertKit form. Add URL parameters to test pre-population:<br>
+            <code>?fn=John&em=john@example.com</code>
+        </div>
+
+        <form id="ck-form">
+            <div class="form-group">
+                <label for="first_name">First Name:</label>
+                <input type="text" name="fields[first_name]" id="first_name" placeholder="Enter first name">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address:</label>
+                <input type="email" name="email_address" id="email" placeholder="Enter email">
+            </div>
+
+            <button type="submit">Subscribe</button>
+        </form>
+
+        <div class="test-urls">
+            <h3>Test URLs:</h3>
+            <a href="?fn=John&em=john@example.com">Valid: John Doe (john@example.com)</a>
+            <a href="?fn=Jane&em=jane@test.com">Valid: Jane (jane@test.com)</a>
+            <a href="?fn=Bob&em=invalid-email">Invalid: Bad email format</a>
+            <a href="?fn=Alice<script>alert('xss')</script>&em=alice@test.com">XSS Test: Script in name</a>
+            <a href="?fn=&em=">Empty parameters</a>
+        </div>
+
+        <div class="console-log" id="console">
+            <div class="log-info">Console Output (Debug Mode Enabled)</div>
+        </div>
+    </div>
+
+    <script src="pre-pop.js"></script>
+    <script>
+        // Custom console logging for demo
+        const consoleDiv = document.getElementById('console');
+
+        function addLog(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `log-${type}`;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            consoleDiv.appendChild(div);
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+
+        // Initialize with debug mode and callbacks
+        CKPrePop.init({
+            debug: true,
+
+            validation: {
+                enabled: true,
+                maxLength: 255,
+                sanitizeInput: true
+            },
+
+            onSuccess: function(data) {
+                addLog('✓ Successfully pre-populated fields: ' + JSON.stringify(data), 'success');
+
+                // Highlight populated fields
+                Object.keys(data).forEach(param => {
+                    const fieldMap = {
+                        'fn': 'fields[first_name]',
+                        'em': 'email_address'
+                    };
+                    const field = document.getElementsByName(fieldMap[param])[0];
+                    if (field) {
+                        field.style.background = '#d4edda';
+                        field.style.borderColor = '#28a745';
+                    }
+                });
+            },
+
+            onError: function(error) {
+                addLog('✗ Error: ' + error.message, 'error');
+            },
+
+            onValidationError: function(error) {
+                addLog(`⚠ Validation failed for "${error.param}": ${error.message}`, 'warn');
+            }
+        });
+
+        // Form submission handler
+        document.getElementById('ck-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const firstName = document.getElementsByName('fields[first_name]')[0].value;
+            const email = document.getElementsByName('email_address')[0].value;
+            addLog(`Form submitted with: ${firstName} (${email})`, 'success');
+        });
+
+        // Log current URL parameters
+        const params = new URLSearchParams(window.location.search);
+        if (params.toString()) {
+            addLog('URL Parameters: ' + params.toString(), 'info');
+        } else {
+            addLog('No URL parameters found. Click a test URL above to try pre-population.', 'info');
+        }
+    </script>
+</body>
+</html>
