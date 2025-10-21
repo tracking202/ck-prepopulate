@@ -111,7 +111,7 @@ All inputs are automatically sanitized to prevent cross-site scripting attacks. 
 - `/` → `&#x2F;`
 
 ### Email Validation
-Email addresses are validated against RFC 5322 format before being set in the form.
+Email addresses are validated using basic format checking (must contain `@` and a domain with `.`) before being set in the form. This catches most common errors while remaining permissive for edge cases.
 
 ### Input Length Limits
 Inputs exceeding `maxLength` (default 255 characters) are rejected to prevent buffer overflow attempts.

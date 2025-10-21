@@ -221,7 +221,8 @@
          * @returns {boolean} True if valid
          */
         _isValidEmail: function(email) {
-            // RFC 5322 compliant email regex (simplified)
+            // Basic email validation (simplified)
+            // Checks for: non-whitespace@non-whitespace.non-whitespace
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return emailRegex.test(email);
         },
