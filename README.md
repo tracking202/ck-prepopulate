@@ -283,6 +283,32 @@ CKPrePop.init({
 });
 ```
 
+## Development
+
+### Building the Minified Version
+
+To create a minified version for production use:
+
+```bash
+npm run minify
+```
+
+This uses [terser](https://terser.org/) via npx (no installation required) to create a compressed version that's ~72% smaller than the original.
+
+To see compression stats:
+```bash
+npm run minify:stats
+```
+
+### Testing
+
+Run syntax validation:
+```bash
+npm test
+```
+
+Open `test.html` in a browser to interactively test the pre-population functionality.
+
 ## Browser Support
 
 - Chrome/Edge: Full support

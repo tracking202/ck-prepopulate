@@ -5,7 +5,8 @@
   "main": "pre-pop.js",
   "scripts": {
     "test": "node --check pre-pop.js",
-    "minify": "cat pre-pop.js | tr -d '\\n' | sed 's/  */ /g' | sed 's/ *{ */{/g' | sed 's/ *} */}/g' | sed 's/ *( */(/g' | sed 's/ *) */)/g' | sed 's/ *; */;/g' | sed 's/ *, */,/g' > pre-pop.min.js"
+    "minify": "npx terser pre-pop.js -o pre-pop.min.js --compress --mangle --comments false",
+    "minify:stats": "npx terser pre-pop.js -o pre-pop.min.js --compress --mangle --comments false && echo \"Original:\" && wc -c pre-pop.js && echo \"Minified:\" && wc -c pre-pop.min.js"
   },
   "repository": {
     "type": "git",
