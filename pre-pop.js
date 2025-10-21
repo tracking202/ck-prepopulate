@@ -180,7 +180,7 @@
                     // Check allowed domains if configured
                     if (config.validation.allowedEmailDomains.length > 0) {
                         const domain = value.split('@')[1];
-                        if (!config.validation.allowedEmailDomains.includes(domain)) {
+                        if (!domain || !config.validation.allowedEmailDomains.includes(domain)) {
                             this._handleValidationError(
                                 'Email domain not allowed',
                                 paramName,
